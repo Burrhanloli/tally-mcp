@@ -1,13 +1,12 @@
 import uvicorn
-from fastapi import FastAPI
-from mcp import Mcp, Tool
+from mcp.server.fastmcp import FastMCP
+
 import httpx
 from xml.etree import ElementTree as ET
 
 # --- MCP Server Setup ---
-mcp = Mcp()
-app = FastAPI()
-app.include_router(mcp.router, prefix="/v1")
+# Create an MCP server
+mcp = FastMCP("Tally MCP Server", version="1.0.0")
 
 # --- Tally Connection Details ---
 TALLY_URL = "http://localhost:9000"
@@ -147,7 +146,3 @@ async def get_all_ledgers() -> str:
         return ledger_list
     except Exception as e:
         return f"Error parsing Tally response: {e}"
-
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000)
