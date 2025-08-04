@@ -1,4 +1,5 @@
 import uvicorn
+import os
 from mcp.server.fastmcp import FastMCP
 
 import httpx
@@ -9,7 +10,7 @@ from xml.etree import ElementTree as ET
 mcp = FastMCP("Tally MCP Server", version="1.0.0")
 
 # --- Tally Connection Details ---
-TALLY_URL = "http://localhost:9000"
+TALLY_URL = os.getenv("TALLY_URL", "http://localhost:9000")
 
 # --- Tally Tool Implementations ---
 
