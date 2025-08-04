@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a Tally MCP (Model Context Protocol) server that provides integration with Tally ERP accounting software. The project creates MCP tools to interact with a Tally instance running on localhost:9000, allowing retrieval of daybooks, ledger vouchers, and ledger lists through XML-based requests.
 
-## implementation Guidelines
+## Implementation Guidelines
 
 1. First think through the problem, read the codebase for relevant files, and write a plan to tasks/todo.md.
 2. The plan should have a list of todo items that you can check off as you complete them
