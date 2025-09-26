@@ -1,2 +1,5 @@
 __pycache__
 tasks
+dist
+todo.md
+node_modules

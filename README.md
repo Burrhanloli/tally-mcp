@@ -1,6 +1,6 @@
-# Tally MCP (Model Context Protocol) Server
+# Tally MCP Server - TypeScript/Bun Implementation
 
-A Model Context Protocol server implementation that provides integration with Tally ERP accounting software. This project creates MCP tools to interact with a Tally instance running on localhost:9000, enabling seamless access to accounting data and operations through natural language commands.
+A Model Context Protocol (MCP) server that provides integration with Tally ERP accounting software. This TypeScript implementation uses Bun as the runtime and @modelcontextprotocol/sdk for MCP functionality, enabling seamless access to accounting data and operations through natural language commands.
 
 ## Features
 
@@ -39,9 +39,9 @@ A Model Context Protocol server implementation that provides integration with Ta
 
 ## Prerequisites
 
-- Python 3.13 or higher
-- Tally ERP running on localhost:9000
-- UV package manager
+- **Bun** runtime (recommended) or Node.js 18+
+- **Tally ERP** running on localhost:9000
+- **TypeScript** (included with Bun)
 
 ## Installation
 
@@ -52,10 +52,16 @@ git clone [repository-url]
 cd tally-mcp
 ```
 
-1. Install dependencies using UV:
+2. Install dependencies using Bun:
 
 ```bash
-uv sync
+bun install
+```
+
+3. Build the project:
+
+```bash
+bun run build
 ```
 
 ## Usage
@@ -65,31 +71,36 @@ uv sync
 Run the MCP server:
 
 ```bash
-uv run server.py
+bun run start
 ```
 
-### Basic Script
+### Development Mode
 
-Run the basic main script:
+Run with hot reload for development:
 
 ```bash
-uv run main.py
+bun run dev
 ```
 
 ### Package Management
 
-This project uses `uv` as the Python package manager. Common commands:
+This project uses `bun` as the package manager. Common commands:
 
-- Add dependencies: `uv add <package>`
-- Remove dependencies: `uv remove <package>`
-- Sync dependencies: `uv sync`
+- Add dependencies: `bun add <package>`
+- Remove dependencies: `bun remove <package>`
+- Install dependencies: `bun install`
 
 ## Project Structure
 
-- `server.py` - Main MCP server implementation with Tally integration
-- `main.py` - Basic entry point
-- `pyproject.toml` - Project configuration
-- `tasks/` - Project tasks and todo lists
+```
+src/
+├── index.ts          # Main entry point
+├── server.ts         # MCP server implementation
+├── types/            # TypeScript type definitions
+├── utils/            # HTTP client and XML parser utilities
+└── tools/            # MCP tool implementations
+dist/                 # Compiled JavaScript output
+```
 
 ## Technical Details
 
@@ -99,22 +110,65 @@ All Tally interactions follow this XML request/response pattern:
 
 1. Construct XML ENVELOPE with HEADER/BODY structure
 2. Send POST request to TALLY_URL (`http://localhost:9000`)
-3. Parse XML response using ElementTree
+3. Parse XML response using fast-xml-parser
 4. Format and return human-readable results
 
 ### Dependencies
 
-- `mcp[cli]` - MCP framework for tool server implementation
-- `FastMCP` - Server framework from mcp.server.fastmcp
-- `httpx` - Async HTTP client for Tally API calls
-- `xml.etree.ElementTree` - XML parsing for Tally responses
+- `@modelcontextprotocol/sdk` - MCP framework for TypeScript
+- `axios` - HTTP client for Tally API calls
+- `fast-xml-parser` - XML parsing for Tally responses
+- `typescript` - TypeScript compiler
+
+### Migration from Python
+
+This TypeScript implementation replaces the original Python version with:
+
+- **Better Type Safety**: Full TypeScript types for all Tally API interactions
+- **Modern Runtime**: Bun provides faster startup and execution
+- **Improved Error Handling**: Better async error management
+- **Modular Architecture**: Clean separation of concerns
+
+**Key Changes:**
+
+- FastMCP → @modelcontextprotocol/sdk
+- httpx → axios
+- xml.etree.ElementTree → fast-xml-parser
+- Python async/await → TypeScript async/await
 
 ## Development Notes
 
 - Tally server must be running on localhost:9000 for tools to function
 - Date formats expected: DD-MM-YYYY
-- Error handling is basic - production use would need more robust XML parsing
-- All MCP tools are async functions using httpx.AsyncClient
+- Error handling includes proper TypeScript error types
+- All MCP tools are async functions using axios
+- XML parsing uses fast-xml-parser for better performance
+
+### Environment Variables
+
+```bash
+# Tally server URL (default: http://localhost:9000)
+TALLY_URL=http://localhost:9000
+
+# Request timeout in milliseconds (default: 30000)
+TALLY_TIMEOUT=30000
+```
+
+### Development Scripts
+
+```bash
+# Type checking
+bun run typecheck
+
+# Linting
+bun run lint
+
+# Code formatting
+bun run format
+
+# Clean build
+bun run clean
+```
 
 ## Contributing
 
