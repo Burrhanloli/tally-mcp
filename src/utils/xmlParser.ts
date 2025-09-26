@@ -48,9 +48,11 @@ export class TallyXmlParser {
 
 		function search(obj: any): void {
 			if (Array.isArray(obj)) {
-				obj.forEach((item) => search(item));
+				for (const item of obj) {
+					search(item);
+				}
 			} else if (typeof obj === "object" && obj !== null) {
-				Object.keys(obj).forEach((key) => {
+				for (const key of Object.keys(obj)) {
 					if (key === elementName) {
 						if (Array.isArray(obj[key])) {
 							results.push(...obj[key]);
@@ -60,7 +62,7 @@ export class TallyXmlParser {
 					} else {
 						search(obj[key]);
 					}
-				});
+				}
 			}
 		}
 

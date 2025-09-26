@@ -25,7 +25,8 @@
       "style": {
         "noNonNullAssertion": "warn",
         "noNestedTernary": "warn",
-        "noMagicNumbers": "warn"
+        "noMagicNumbers": "warn",
+        "useFilenamingConvention": "warn"
       },
       "suspicious": {
         "noExplicitAny": "warn",
