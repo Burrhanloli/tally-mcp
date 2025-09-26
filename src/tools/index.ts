@@ -4,8 +4,8 @@ import type { TallyXmlParser } from "../utils/xmlParser.js";
 
 // Tool context type
 export type ToolContext = {
-  httpClient: TallyHttpClient;
-  xmlParser: TallyXmlParser;
+	httpClient: TallyHttpClient;
+	xmlParser: TallyXmlParser;
 };
 
 import { registerAgeAnalysisTool } from "./ageAnalysis.js";
@@ -57,56 +57,56 @@ import { registerVoucherTypesTool } from "./voucherTypes.js";
 // import { registerAuditTrailTool } from './auditTrail.js';
 
 export function registerAllTools(
-  server: TallyMcpServer,
-  httpClient: TallyHttpClient,
-  xmlParser: TallyXmlParser
+	server: TallyMcpServer,
+	httpClient: TallyHttpClient,
+	xmlParser: TallyXmlParser
 ): void {
-  const context: ToolContext = { httpClient, xmlParser };
+	const context: ToolContext = { httpClient, xmlParser };
 
-  // Register implemented tools
-  registerDayBookTool(server, context);
-  registerLedgerVouchersTool(server, context);
-  registerAllLedgersTool(server, context);
-  registerCompanyInfoTool(server, context);
-  registerAllGroupsTool(server, context);
-  registerCreateLedgerTool(server, context);
-  registerCreateStockItemTool(server, context);
-  registerAllStockItemsTool(server, context);
-  registerVoucherTypesTool(server, context);
-  registerTrialBalanceTool(server, context);
-  registerProfitLossTool(server, context);
-  registerBalanceSheetTool(server, context);
-  registerCashFlowTool(server, context);
-  registerStockSummaryTool(server, context);
-  registerOutstandingReceivablesTool(server, context);
-  registerOutstandingPayablesTool(server, context);
-  registerBankReconciliationTool(server, context);
-  registerAgeAnalysisTool(server, context);
-  registerBudgetVsActualTool(server, context);
-  registerCreateSalesVoucherTool(server, context);
-  registerCreatePurchaseVoucherTool(server, context);
-  registerCreatePaymentVoucherTool(server, context);
-  registerCreateReceiptVoucherTool(server, context);
-  registerCreateJournalVoucherTool(server, context);
-  registerGetVoucherDetailsTool(server, context);
-  registerGstReportTool(server, context);
-  registerAuditTrailTool(server, context);
-  registerBackupCompanyTool(server, context);
-  // registerBalanceSheetTool(server, context);
-  // registerCashFlowTool(server, context);
-  // registerStockSummaryTool(server, context);
-  // registerOutstandingReceivablesTool(server, context);
-  // registerOutstandingPayablesTool(server, context);
-  // registerCreateSalesVoucherTool(server, context);
-  // registerCreatePurchaseVoucherTool(server, context);
-  // registerCreatePaymentVoucherTool(server, context);
-  // registerCreateReceiptVoucherTool(server, context);
-  // registerCreateJournalVoucherTool(server, context);
-  // registerGetVoucherDetailsTool(server, context);
-  // registerGstReportTool(server, context);
-  // registerBankReconciliationTool(server, context);
-  // registerAgeAnalysisTool(server, context);
-  // registerBudgetVsActualTool(server, context);
-  // registerBackupCompanyTool(server, context);
-  // registerAuditTrailTool(server, context);
+	// Register implemented tools
+	registerDayBookTool(server, context);
+	registerLedgerVouchersTool(server, context);
+	registerAllLedgersTool(server, context);
+	registerCompanyInfoTool(server, context);
+	registerAllGroupsTool(server, context);
+	registerCreateLedgerTool(server, context);
+	registerCreateStockItemTool(server, context);
+	registerAllStockItemsTool(server, context);
+	registerVoucherTypesTool(server, context);
+	registerTrialBalanceTool(server, context);
+	registerProfitLossTool(server, context);
+	registerBalanceSheetTool(server, context);
+	registerCashFlowTool(server, context);
+	registerStockSummaryTool(server, context);
+	registerOutstandingReceivablesTool(server, context);
+	registerOutstandingPayablesTool(server, context);
+	registerBankReconciliationTool(server, context);
+	registerAgeAnalysisTool(server, context);
+	registerBudgetVsActualTool(server, context);
+	registerCreateSalesVoucherTool(server, context);
+	registerCreatePurchaseVoucherTool(server, context);
+	registerCreatePaymentVoucherTool(server, context);
+	registerCreateReceiptVoucherTool(server, context);
+	registerCreateJournalVoucherTool(server, context);
+	registerGetVoucherDetailsTool(server, context);
+	registerGstReportTool(server, context);
+	registerAuditTrailTool(server, context);
+	registerBackupCompanyTool(server, context);
+	// registerBalanceSheetTool(server, context);
+	// registerCashFlowTool(server, context);
+	// registerStockSummaryTool(server, context);
+	// registerOutstandingReceivablesTool(server, context);
+	// registerOutstandingPayablesTool(server, context);
+	// registerCreateSalesVoucherTool(server, context);
+	// registerCreatePurchaseVoucherTool(server, context);
+	// registerCreatePaymentVoucherTool(server, context);
+	// registerCreateReceiptVoucherTool(server, context);
+	// registerCreateJournalVoucherTool(server, context);
+	// registerGetVoucherDetailsTool(server, context);
+	// registerGstReportTool(server, context);
+	// registerBankReconciliationTool(server, context);
+	// registerAgeAnalysisTool(server, context);
+	// registerBudgetVsActualTool(server, context);
+	// registerBackupCompanyTool(server, context);
+	// registerAuditTrailTool(server, context);
 }

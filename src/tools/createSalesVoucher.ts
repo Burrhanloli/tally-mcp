@@ -1,46 +1,33 @@
+import { z } from "zod";
 import type { TallyMcpServer } from "../server.js";
 import type { ToolContext } from "./index.js";
 
+const createSalesVoucherSchema = z.object({
+	party: z.string().describe("Customer name (ledger name)."),
+	items: z.string().describe("Description of items sold."),
+	amount: z.number().describe("Total sales amount."),
+	date: z.string().describe("Date of sale in DD-MM-YYYY format."),
+});
+
 export function registerCreateSalesVoucherTool(
-  server: TallyMcpServer,
-  context: ToolContext
+	server: TallyMcpServer,
+	context: ToolContext
 ): void {
-  const { httpClient } = context;
+	const { httpClient } = context;
 
-  server.registerToolWithHandler(
-    "create_sales_voucher",
-    "Creates a sales voucher in Tally.",
-    {
-      type: "object",
-      properties: {
-        party: {
-          type: "string",
-          description: "Customer name (ledger name).",
-        },
-        items: {
-          type: "string",
-          description: "Description of items sold.",
-        },
-        amount: {
-          type: "number",
-          description: "Total sales amount.",
-        },
-        date: {
-          type: "string",
-          description: "Date of sale in DD-MM-YYYY format.",
-        },
-      },
-      required: ["party", "items", "amount", "date"],
-    },
-    async (args: {
-      party: string;
-      items: string;
-      amount: number;
-      date: string;
-    }) => {
-      const { party, items, amount, date } = args;
+	server.registerToolWithHandler(
+		"createSalesVoucher",
+		"Creates a sales voucher in Tally.",
+		createSalesVoucherSchema,
+		async (args: {
+			party: string;
+			items: string;
+			amount: number;
+			date: string;
+		}) => {
+			const { party, items, amount, date } = args;
 
-      const xmlRequest = `<ENVELOPE>
+			const xmlRequest = `<ENVELOPE>
         <HEADER>
             <TALLYREQUEST>Import Data</TALLYREQUEST>
         </HEADER>
@@ -73,17 +60,17 @@ export function registerCreateSalesVoucherTool(
         </BODY>
     </ENVELOPE>`;
 
-      try {
-        const response = await httpClient.post(xmlRequest);
-        const responseText = response.rawXml || "";
+			try {
+				const response = await httpClient.post(xmlRequest);
+				const responseText = response.rawXml || "";
 
-        if (responseText.toLowerCase().includes("created")) {
-          return `Sales voucher created successfully:\nParty: ${party}\nAmount: ${amount}\nDate: ${date}\nItems: ${items}`;
-        }
-        return `Failed to create sales voucher. Response: ${responseText.slice(0, 200)}`;
-      } catch (error: any) {
-        return `Error creating sales voucher: ${error.message}`;
-      }
-    }
-  );
+				if (responseText.toLowerCase().includes("created")) {
+					return `Sales voucher created successfully:\nParty: ${party}\nAmount: ${amount}\nDate: ${date}\nItems: ${items}`;
+				}
+				return `Failed to create sales voucher. Response: ${responseText.slice(0, 200)}`;
+			} catch (error: any) {
+				return `Error creating sales voucher: ${error.message}`;
+			}
+		}
+	);
 }

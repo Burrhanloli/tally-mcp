@@ -66,14 +66,6 @@ bun run build
 
 ## Usage
 
-### Starting the Server
-
-Run the MCP server:
-
-```bash
-bun run start
-```
-
 ### Development Mode
 
 Run with hot reload for development:

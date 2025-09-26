@@ -1,29 +1,25 @@
+import { z } from "zod";
 import type { TallyMcpServer } from "../server.js";
 import type { ToolContext } from "./index.js";
 
+const dayBookSchema = z.object({
+	date: z.string().describe("The date for the daybook in DD-MM-YYYY format."),
+});
+
 export function registerDayBookTool(
-  server: TallyMcpServer,
-  context: ToolContext
+	server: TallyMcpServer,
+	context: ToolContext
 ): void {
-  const { httpClient, xmlParser } = context;
+	const { httpClient, xmlParser } = context;
 
-  server.registerToolWithHandler(
-    "get_day_book",
-    "Retrieves the daybook from Tally for a specific date.",
-    {
-      type: "object",
-      properties: {
-        date: {
-          type: "string",
-          description: "The date for the daybook in DD-MM-YYYY format.",
-        },
-      },
-      required: ["date"],
-    },
-    async (args: { date: string }) => {
-      const { date } = args;
+	server.registerToolWithHandler(
+		"getDayBook",
+		"Retrieves the daybook from Tally for a specific date.",
+		dayBookSchema,
+		async (args: { date: string }) => {
+			const { date } = args;
 
-      const xmlRequest = `<ENVELOPE>
+			const xmlRequest = `<ENVELOPE>
         <HEADER>
             <TALLYREQUEST>Export Data</TALLYREQUEST>
         </HEADER>
@@ -40,35 +36,35 @@ export function registerDayBookTool(
         </BODY>
     </ENVELOPE>`;
 
-      try {
-        const response = await httpClient.post(xmlRequest);
-        const parsedXml = xmlParser.parse(response.rawXml || "");
+			try {
+				const response = await httpClient.post(xmlRequest);
+				const parsedXml = xmlParser.parse(response.rawXml || "");
 
-        const vouchers = xmlParser.findElements(parsedXml, "VOUCHER");
-        if (!vouchers || vouchers.length === 0) {
-          return "No entries found in the daybook for this date.";
-        }
+				const vouchers = xmlParser.findElements(parsedXml, "VOUCHER");
+				if (!vouchers || vouchers.length === 0) {
+					return "No entries found in the daybook for this date.";
+				}
 
-        let daybookReport = `Daybook for ${date}:\n\n`;
-        for (const voucher of vouchers) {
-          const voucherType = xmlParser.getElementText(voucher, [
-            "VOUCHERTYPENAME",
-          ]);
-          const voucherNumber = xmlParser.getElementText(voucher, [
-            "VOUCHERNUMBER",
-          ]);
-          const partyLedger = xmlParser.getElementText(voucher, [
-            "PARTYLEDGERNAME",
-          ]);
-          const amount = xmlParser.getElementText(voucher, ["AMOUNT"]);
+				let daybookReport = `Daybook for ${date}:\n\n`;
+				for (const voucher of vouchers) {
+					const voucherType = xmlParser.getElementText(voucher, [
+						"VOUCHERTYPENAME",
+					]);
+					const voucherNumber = xmlParser.getElementText(voucher, [
+						"VOUCHERNUMBER",
+					]);
+					const partyLedger = xmlParser.getElementText(voucher, [
+						"PARTYLEDGERNAME",
+					]);
+					const amount = xmlParser.getElementText(voucher, ["AMOUNT"]);
 
-          daybookReport += `- ${voucherType || "N/A"} (${voucherNumber || "N/A"}): ${partyLedger || "N/A"}, Amount: ${amount || "N/A"}\n`;
-        }
+					daybookReport += `- ${voucherType || "N/A"} (${voucherNumber || "N/A"}): ${partyLedger || "N/A"}, Amount: ${amount || "N/A"}\n`;
+				}
 
-        return daybookReport;
-      } catch (error: any) {
-        return `Error parsing Tally response: ${error.message}`;
-      }
-    }
-  );
+				return daybookReport;
+			} catch (error: any) {
+				return `Error parsing Tally response: ${error.message}`;
+			}
+		}
+	);
 }

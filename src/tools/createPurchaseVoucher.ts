@@ -1,46 +1,33 @@
+import { z } from "zod";
 import type { TallyMcpServer } from "../server.js";
 import type { ToolContext } from "./index.js";
 
+const createPurchaseVoucherSchema = z.object({
+	party: z.string().describe("Supplier name (ledger name)."),
+	items: z.string().describe("Description of items purchased."),
+	amount: z.number().describe("Total purchase amount."),
+	date: z.string().describe("Date of purchase in DD-MM-YYYY format."),
+});
+
 export function registerCreatePurchaseVoucherTool(
-  server: TallyMcpServer,
-  context: ToolContext
+	server: TallyMcpServer,
+	context: ToolContext
 ): void {
-  const { httpClient } = context;
+	const { httpClient } = context;
 
-  server.registerToolWithHandler(
-    "create_purchase_voucher",
-    "Creates a purchase voucher in Tally.",
-    {
-      type: "object",
-      properties: {
-        party: {
-          type: "string",
-          description: "Supplier name (ledger name).",
-        },
-        items: {
-          type: "string",
-          description: "Description of items purchased.",
-        },
-        amount: {
-          type: "number",
-          description: "Total purchase amount.",
-        },
-        date: {
-          type: "string",
-          description: "Date of purchase in DD-MM-YYYY format.",
-        },
-      },
-      required: ["party", "items", "amount", "date"],
-    },
-    async (args: {
-      party: string;
-      items: string;
-      amount: number;
-      date: string;
-    }) => {
-      const { party, items, amount, date } = args;
+	server.registerToolWithHandler(
+		"createPurchaseVoucher",
+		"Creates a purchase voucher in Tally.",
+		createPurchaseVoucherSchema,
+		async (args: {
+			party: string;
+			items: string;
+			amount: number;
+			date: string;
+		}) => {
+			const { party, items, amount, date } = args;
 
-      const xmlRequest = `<ENVELOPE>
+			const xmlRequest = `<ENVELOPE>
         <HEADER>
             <TALLYREQUEST>Import Data</TALLYREQUEST>
         </HEADER>
@@ -73,17 +60,17 @@ export function registerCreatePurchaseVoucherTool(
         </BODY>
     </ENVELOPE>`;
 
-      try {
-        const response = await httpClient.post(xmlRequest);
-        const responseText = response.rawXml || "";
+			try {
+				const response = await httpClient.post(xmlRequest);
+				const responseText = response.rawXml || "";
 
-        if (responseText.toLowerCase().includes("created")) {
-          return `Purchase voucher created successfully:\nParty: ${party}\nAmount: ${amount}\nDate: ${date}\nItems: ${items}`;
-        }
-        return `Failed to create purchase voucher. Response: ${responseText.slice(0, 200)}`;
-      } catch (error: any) {
-        return `Error creating purchase voucher: ${error.message}`;
-      }
-    }
-  );
+				if (responseText.toLowerCase().includes("created")) {
+					return `Purchase voucher created successfully:\nParty: ${party}\nAmount: ${amount}\nDate: ${date}\nItems: ${items}`;
+				}
+				return `Failed to create purchase voucher. Response: ${responseText.slice(0, 200)}`;
+			} catch (error: any) {
+				return `Error creating purchase voucher: ${error.message}`;
+			}
+		}
+	);
 }
